@@ -1,5 +1,5 @@
 name: tsc_utils
-description: tsc_utils
+description: 标签打印机 *TSC* 数据转换工具，主要用于将 image 图像转换成标签打印机可识别的字节数组。
 version: 0.0.1
 homepage:
 
