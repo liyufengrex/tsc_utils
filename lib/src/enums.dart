@@ -71,3 +71,20 @@ extension ExDensity on Density {
     }
   }
 }
+
+//启用/禁用撕纸位置走到撕纸处，此设置关掉电源后将保存在打印机内
+enum Tear {
+  on,
+  off,
+}
+
+extension ExTear on Tear {
+  String get value {
+    switch (this) {
+      case Tear.on:
+        return 'ON';
+      case Tear.off:
+        return 'OFF';
+    }
+  }
+}

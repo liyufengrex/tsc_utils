@@ -32,12 +32,16 @@ class Generator {
 
   // step4
   void addImage(
-    Image image,
-  ) {
+    Image image, {
+    bool needGrayscale = false,
+  }) {
     final int widthPx = image.width;
     final int heightPx = image.height;
     final int widthBytes = (widthPx + 7) ~/ 8;
-    final List<int> resterizedData = _toRasterFormat(image);
+    final List<int> resterizedData = _toRasterFormat(
+      image,
+      needGrayscale: needGrayscale,
+    );
 
     final List<int> header = "BITMAP 0,0,$widthBytes,$heightPx,0,".codeUnits;
     _byte += header;
@@ -75,11 +79,28 @@ class Generator {
     _byte += value;
   }
 
-  List<int> _toRasterFormat(Image imgSrc) {
+  // 发出蜂鸣 level (0 ~ 9), interval(间隔时间:1-4095)
+  void addSound(int level, int interval) {
+    final value = "SOUND $level,$interval$tscFix".codeUnits;
+    _byte += value;
+  }
+
+  //启用/禁用撕纸位置走到撕纸处，此设置关掉电源后将保存在打印机内
+  void addTear(Tear mode) {
+    final value = "SET TEAR ${mode.value}$tscFix".codeUnits;
+    _byte += value;
+  }
+
+  List<int> _toRasterFormat(
+    Image imgSrc, {
+    bool needGrayscale = false,
+  }) {
     Image image = Image.from(imgSrc); // make a copy
     final int widthPx = image.width;
     final int heightPx = image.height;
-
+    if (needGrayscale) {
+      grayscale(image);
+    }
     // R/G/B channels are same -> keep only one channel
     final List<int> oneChannelBytes = [];
     final List<int> buffer = image.getBytes(format: Format.rgba);
